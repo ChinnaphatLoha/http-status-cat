@@ -81,7 +81,10 @@ const shakeForm = () => {
     </h1>
 
     <div class="flex flex-col items-center w-2/3 md:w-1/3">
-      <p v-if="warningMessage && !isValidCode" class="text-red-500 text-sm md:text-base mb-4 italic">
+      <p
+        v-if="warningMessage && !isValidCode"
+        class="text-red-500 text-sm md:text-base mb-4 italic"
+      >
         {{ warningMessage }}
       </p>
 
@@ -95,6 +98,8 @@ const shakeForm = () => {
             () => {
               if (!isValidCode) {
                 shakeForm()
+              } else {
+                warningMessage = ''
               }
             }
           "
