@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { allHttpStatusCode } from './constants/httpStatusCode'
 
 // Constants
@@ -11,6 +11,7 @@ const warningMessage = ref('')
 const showReadMore = ref(false)
 const imageSrc = ref('')
 const isPlaceholder = ref(true)
+const isValidCode = computed(() => isValidStatusCode(httpStatusCode.value.trim()))
 
 // Handle image load error
 const handleImageError = () => {
@@ -53,6 +54,15 @@ const shakeScreen = () => {
     main?.classList.remove('shake')
   }, 500)
 }
+
+// Shake the form to indicate invalid status code
+const shakeForm = () => {
+  const form = document.querySelector('form')
+  form?.classList.add('shake')
+  setTimeout(() => {
+    form?.classList.remove('shake')
+  }, 500)
+}
 </script>
 
 <template>
@@ -71,7 +81,7 @@ const shakeScreen = () => {
     </h1>
 
     <div class="flex flex-col items-center w-2/3 md:w-1/3">
-      <p v-if="warningMessage" class="text-red-500 text-sm md:text-base mb-4 italic">
+      <p v-if="warningMessage && !isValidCode" class="text-red-500 text-sm md:text-base mb-4 italic">
         {{ warningMessage }}
       </p>
 
@@ -81,13 +91,20 @@ const shakeScreen = () => {
           type="text"
           placeholder="Enter HTTP status code"
           class="flex-grow p-4 mb-2 border-2 border-black rounded-l-lg focus:outline-none text-center"
+          @input="
+            () => {
+              if (!isValidCode) {
+                shakeForm()
+              }
+            }
+          "
         />
         <button
           type="submit"
           @click="handleSubmit"
-          class="px-4 py-2 mb-2 bg-black text-white rounded-r-lg hover:bg-gray-800 transition duration-300 ease-in-out"
+          class="w-[75px] px-4 py-2 mb-2 rounded-r-lg bg-black text-white text-xl"
         >
-          Meow
+          {{ isValidCode ? '😻' : '😾' }}
         </button>
       </form>
     </div>
